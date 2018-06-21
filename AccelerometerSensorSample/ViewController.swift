@@ -32,7 +32,7 @@ class ViewController: UIViewController {
         let center = self.view.center
         var ballX = Double(center.x)
         var ballY = Double(center.y)
-        
+        circle.center = center
         let myBoundSize: CGSize = UIScreen.main.bounds.size
         
         
@@ -48,8 +48,8 @@ class ViewController: UIViewController {
                 let accY = data!.acceleration.y
                 let accZ = data!.acceleration.z
                 
-                let tX = (accX*10 + ballX)
-                let tY = (accZ*10 + ballY)
+                let tX = (accX*20 + ballX)
+                let tY = (accZ*5 + ballY)
                 
                 //display accelerometer value
                 self.xLabel.text = String(format: "%06f", accX )
