@@ -29,31 +29,42 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        let center = self.view.center
+        var ballX = Double(center.x)
+        var ballY = Double(center.y)
+        
+        let myBoundSize: CGSize = UIScreen.main.bounds.size
         
         
         //Accelerometer
         if manager.isAccelerometerAvailable {
+            
+            manager.accelerometerUpdateInterval = 0.1
+            
             let accelerometerHandler :CMAccelerometerHandler = { (data: CMAccelerometerData?, error: Error?) in
-                let center = self.view.center
-                let centX = Double(center.x)
-                let centY = Double(center.y)
                 
-                let accX = data!.acceleration.x
+                
+                let accX = data!.acceleration.x //変化量たち
                 let accY = data!.acceleration.y
                 let accZ = data!.acceleration.z
                 
-                //let g = 8.80665
-                //let d = Double(center.x) / g
-
-                self.xLabel.text = String(format: "%06f", accX)
-                self.yLabel.text = String(format: "%06f", accY)
-                self.zLabel.text = String(format: "%06f", accZ)
+                let tX = (accX*10 + ballX)
+                let tY = (accZ*10 + ballY)
                 
+                //display accelerometer value
+                self.xLabel.text = String(format: "%06f", accX )
+                self.yLabel.text = String(format: "%06f", accY )
+                self.zLabel.text = String(format: "%06f", accZ )
                 
-                self.circle.transform = CGAffineTransform(translationX: CGFloat(centX + accX*100), y: CGFloat(centY + accY*100))
+                self.circle.transform = CGAffineTransform(translationX: CGFloat(ballX), y: CGFloat(ballY))
+                
+                ballY = tY
+                ballX = tX
+//                if (0 < tX && tX < Double(myBoundSize.width)) { ballX = tX }
+//                if (0 < tY && tY < Double(myBoundSize.height)) { ballY = tY }
             
             }
-            manager.accelerometerUpdateInterval = 0.1
+            
             manager.startAccelerometerUpdates(
                 to: OperationQueue.current!,
                 withHandler: accelerometerHandler)
@@ -61,27 +72,27 @@ class ViewController: UIViewController {
         }
         
         //Gyroscope data
-        if manager.isGyroAvailable {
-            
-            let gyroHandler = { (data: CMGyroData?, error: Error?) in
-                
-                let pitch = data!.rotationRate.x
-                let roll = data!.rotationRate.y
-                let yaw = data!.rotationRate.z
-                
-                self.xPitch.text = String(format: "%06f", pitch)
-                self.yRoll.text = String(format: "%06f", roll)
-                self.zYaw.text = String(format: "%06f", yaw)
-                
-                
-            }
-            
-            
-            manager.gyroUpdateInterval = 0.1
-            manager.startGyroUpdates(
-                to: OperationQueue.current!,
-                withHandler: gyroHandler)
-        }
+//        if manager.isGyroAvailable {
+//
+//            let gyroHandler = { (data: CMGyroData?, error: Error?) in
+//
+//                let pitch = data!.rotationRate.x
+//                let roll = data!.rotationRate.y
+//                let yaw = data!.rotationRate.z
+//
+//                self.xPitch.text = String(format: "%06f", pitch)
+//                self.yRoll.text = String(format: "%06f", roll)
+//                self.zYaw.text = String(format: "%06f", yaw)
+//
+//
+//            }
+//
+//
+//            manager.gyroUpdateInterval = 0.1
+//            manager.startGyroUpdates(
+//                to: OperationQueue.current!,
+//                withHandler: gyroHandler)
+//        }
         
         
     }
